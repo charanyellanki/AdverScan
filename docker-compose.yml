@@ -1,0 +1,36 @@
+# AdverScan FastAPI inference service (CPU-only PyTorch).
+#
+# Usage:
+#   docker compose up --build
+#   curl http://localhost:${PORT:-8000}/healthz
+#
+# Optionally mount a pretrained CIFAR-10 ResNet-18 checkpoint and trained detector artifact:
+#   export ADVERSCAN_VICTIM_CHECKPOINT=/path/on/host/model.pth
+#   export ADVERSCAN_DETECTOR_ARTIFACT=/path/on/host/detector.joblib
+# Pass through environment or volumes as needed.
+
+services:
+  adverscan-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: adverscan-api:local
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      ADVERSCAN_DETECTOR_ARTIFACT: ${ADVERSCAN_DETECTOR_ARTIFACT:-/data/artifacts/detector.joblib}
+      ADVERSCAN_VICTIM_CHECKPOINT: ${ADVERSCAN_VICTIM_CHECKPOINT:-}
+      ADVERSCAN_CIFAR10_RESNET18: ${ADVERSCAN_CIFAR10_RESNET18:-}
+    volumes:
+      - adverscan-artifacts:/data/artifacts
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  adverscan-artifacts:
+    driver: local

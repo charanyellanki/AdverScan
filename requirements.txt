@@ -1,0 +1,7 @@
+# Hugging Face Spaces / Streamlit installs: includes PyTorch deps + UI.
+#
+# Docker images still rely on Dockerfile + adverscan/requirements.docker.txt for CPU builds.
+#
+
+-r adverscan/requirements.txt
+streamlit>=1.31.0

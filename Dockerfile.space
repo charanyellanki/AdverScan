@@ -1,0 +1,35 @@
+# Hugging Face Spaces (Streamlit Docker template).
+# Replace the auto-generated Space Dockerfile with this file (or merge COPY lines).
+#
+# Build context must be the repo root (contains `adverscan/`, `app.py`, `src/`, `requirements.txt`).
+#
+FROM python:3.11-slim-bookworm
+
+WORKDIR /app
+
+ENV PYTHONPATH=/app \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+
+COPY adverscan ./adverscan
+
+COPY app.py .
+
+COPY src ./src
+
+COPY .streamlit ./.streamlit
+
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8501
+
+HEALTHCHECK CMD curl --fail http://127.0.0.1:8501/_stcore/health || exit 1
+
+ENTRYPOINT ["streamlit", "run", "src/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
