@@ -1,3 +1,23 @@
+---
+title: AdverScan
+emoji: 👁️
+colorFrom: purple
+colorTo: indigo
+sdk: docker
+python_version: "3.11"
+app_file: src/streamlit_app.py
+app_port: 8501
+short_description: Adversarial-input screening with PyTorch (ResNet-18), sklearn detector, FGSM/PGD/C&W tooling, FastAPI & Streamlit.
+tags:
+  - pytorch
+  - adversarial-ml
+  - streamlit
+  - sklearn
+pinned: false
+---
+
+Metadata above follows the [Hugging Face Spaces configuration reference](https://huggingface.co/docs/hub/spaces-config-reference). **`app_file`** matches the Dockerfile entry (`streamlit run src/streamlit_app.py`, which forwards to `app.main()`).
+
 # AdverScan
 
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
